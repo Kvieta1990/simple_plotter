@@ -1,16 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Data Plotter</title>
+    <title>ZYP - Data Plotter</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-        }
         .centered-content {
             width: 50%;   /* Set the width of the content */
             min-width: 800px; /* Optional: minimum width */
@@ -18,9 +12,65 @@
         .alert-error {
             color: red;
         }
+				body, html {
+    		    margin-top: 100px;
+    		    display: flex;
+    		    justify-content: center; /* Center horizontally */
+    		    align-items: center; /* Center vertically */
+    		    background: black;
+    		    overflow: hidden;
+    		}
+    		.centered-content {
+    		    width: 50%;   /* Set the width of the content */
+    		    min-width: 800px; /* Optional: minimum width */
+    		    background-color: white; /* Solid background for the content area */
+    		    padding: 20px;
+    		    border-radius: 8px;
+    		    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    		    position: relative; /* Ensures it stays above the stars */
+    		    z-index: 2;
+    		}
+    		.star {
+    		    position: absolute;
+    		    width: 4px;
+    		    height: 4px;
+    		    background: white;
+    		    border-radius: 50%;
+    		    box-shadow: 0 0 5px white;
+    		    animation: shine 1s infinite ease-in-out alternate;
+    		}
+    		@keyframes shine {
+    		    from { opacity: 0; }
+    		    to { opacity: 1; }
+    		}
+				.button-container {
+				    position: absolute;
+    		    top: 10px;
+    		    left: 10px;
+    		    z-index: 3; /* Make sure buttons are above all other content */
+    		}
+
+    		.w3-button { /* Additional styling for buttons if needed */
+    		    margin: 0 4px; /* Spacing between buttons */
+    		    background-color: white; /* White background for each button */
+    		    color: black; /* Text color */
+    		}
+				.footer-container {
+						position: absolute;
+						bottom: 10px;
+						left: 10px;
+						z-index: 3;
+						color: white;
+				}
     </style>
 </head>
 <body class="w3-light-grey">
+
+		<div class="button-container">
+        <a href="/" class="w3-button w3-round">Home</a>
+        <a href="https://www.ornl.gov/staff-profile/yuanpeng-zhang" target="_blank" class="w3-button w3-round">Yuanpeng's Profile</a>
+				<a href="https://iris2020.net" target="_blank" class="w3-button w3-round">Yuanpeng's Homepage</a>
+    </div>
 
     <div class="centered-content w3-card-4 w3-padding w3-margin">
         <h1 class="w3-center">Upload Data File</h1>
@@ -44,6 +94,28 @@
             </p>
         </form>
     </div>
+				<div class="footer-container">
+						Copyright &copy; 2024 Yuanpeng Zhang
+				</div>
+
+		<script>
+		    function createStars(count) {
+		        const sky = document.querySelector('body');
+		        for (let i = 0; i < count; i++) {
+		            const star = document.createElement('div');
+		            star.className = 'star';
+		            star.style.top = `${Math.random() * window.innerHeight}px`;
+		            star.style.left = `${Math.random() * window.innerWidth}px`;
+		            star.style.animationDuration = `${Math.random() * 3 + 1}s`; // Random duration between 1s and 4s
+		            star.style.animationDelay = `${Math.random() * 3}s`; // Random delay
+		            sky.appendChild(star);
+		        }
+		    }
+		
+		    window.onload = () => {
+		        createStars(150); // Create 150 stars
+		    };
+		</script>
 
 </body>
 </html>
