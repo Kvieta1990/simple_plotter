@@ -47,7 +47,7 @@ def plot(filename, filename_i):
         df = pd.read_csv(
             filepath,
             header=None if header_lines == 0 else header_lines,
-            delimiter="\s+,|,|\s+"
+            delimiter=r'\s*,\s*|\s+'
         )
         df.columns = [f'column-{i}' for i in range(len(df.columns))]
     except:  # noqa
