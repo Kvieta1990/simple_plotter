@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Plotter</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body class="w3-light-grey w3-display-container" style="height: 100vh;">
+
+    <div class="w3-display-middle" style="width: 50%;">
+        <div class="w3-card-4 w3-margin">
+            <div class="w3-container w3-padding">
+                <h1 class="w3-center">{{ fn }}</h1>
+                <div>{{ plot_html|safe }}</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

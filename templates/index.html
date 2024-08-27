@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Plotter</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+        .centered-content {
+            width: 50%;   /* Set the width of the content */
+            min-width: 800px; /* Optional: minimum width */
+        }
+        .alert-error {
+            color: red;
+        }
+    </style>
+</head>
+<body class="w3-light-grey">
+
+    <div class="centered-content w3-card-4 w3-padding w3-margin">
+        <h1 class="w3-center">Upload Data File</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form action="/" method="post" enctype="multipart/form-data" class="w3-container">
+            <p>
+                <input class="w3-input w3-border" type="file" name="datafile" required>
+            </p>
+            <p>
+                <label for="headerlines" class="w3-text-black">Number of header lines:</label>
+                <input class="w3-input w3-border" type="number" id="headerlines" name="headerlines" value="0">
+            </p>
+            <p>
+                <button class="w3-btn w3-blue">Upload and Plot</button>
+            </p>
+        </form>
+    </div>
+
+</body>
+</html>
