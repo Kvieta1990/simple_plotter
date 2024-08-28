@@ -85,7 +85,8 @@
     </div>
 
 		<div class="footer-container">
-				<a id="copyright">Copyright &copy; 2024 Yuanpeng Zhang</a> | <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> | <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> | <a class="color-link" href="https://discord.gg/UAJJVfQ5" target="_blank">Contact Me</a>
+				<a id="copyright">Copyright &copy; 2024 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="ht
+tps://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://discord.gg/UAJJVfQ5" target="_blank">Contact Me</a>
     </div>
 
 		<script>
@@ -111,6 +112,9 @@
 				    const buttons = document.querySelectorAll('.w3-button');
 				    const stars = document.querySelectorAll('.star');
 				    const copyright = document.getElementById('copyright');
+						const sep1 = document.getElementById('sep1');
+            const sep2 = document.getElementById('sep2');
+            const sep3 = document.getElementById('sep3')
 				
 				    if (body.style.background === 'white') {
 				        body.style.background = 'black';
@@ -118,6 +122,9 @@
 				            button.style.backgroundColor = 'white';
 				            button.style.color = 'black';
 				            copyright.style.color = 'white';
+										sep1.style.color = 'white';
+                    sep2.style.color = 'white';
+                    sep3.style.color = 'white';
 				        });
 				        stars.forEach(star => {
 				            star.style.backgroundColor = 'white';
@@ -128,6 +135,9 @@
 				            button.style.backgroundColor = '#7e98ec';
 				            button.style.color = 'white';
 				            copyright.style.color = 'black';
+										sep1.style.color = 'black';
+                    sep2.style.color = 'black';
+                    sep3.style.color = 'black';
 				        });
 				        stars.forEach(star => {
 				            star.style.backgroundColor = 'white';
