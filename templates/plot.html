@@ -15,7 +15,7 @@
             position: relative; /* Ensures it stays above the stars */
             z-index: 2;
         }
-        body, html {
+        body {
             background-color: black;
             overflow: hidden;
             margin: 0;
@@ -24,25 +24,10 @@
 						align-items: center;
         }
 
-        /* Star styles */
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            box-shadow: 0 0 5px #fff;
-            animation: shine 1s infinite ease-in-out alternate;
-        }
-
-        /* Randomly generate stars */
-        @keyframes shine {
-            from { transform: scale(1); }
-            to { transform: scale(1.5); }
-        }
 				.star {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 5px;
+            height: 5px;
             background: white;
             border-radius: 50%;
             box-shadow: 0 0 5px white;
@@ -86,6 +71,7 @@
 				<a href="/" class="w3-button w3-round">Home</a>
         <a href="https://www.ornl.gov/staff-profile/yuanpeng-zhang" target="_blank" class="w3-button w3-round">Yuanpeng's Profile</a>
         <a href="https://iris2020.net" target="_blank" class="w3-button w3-round">Yuanpeng's Homepage</a>
+				<button onclick="toggleBackground()" class="w3-button w3-round">Dark/Light</button>
     </div>
 
     <div class="centered-content w3-display-middle" style="width: 50%;">
@@ -99,7 +85,7 @@
     </div>
 
 		<div class="footer-container">
-				Copyright &copy; 2024 Yuanpeng Zhang | <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> | <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> | <a class="color-link" href="https://discord.gg/UAJJVfQ5" target="_blank">Contact Me</a>
+				<a id="copyright">Copyright &copy; 2024 Yuanpeng Zhang</a> | <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> | <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> | <a class="color-link" href="https://discord.gg/UAJJVfQ5" target="_blank">Contact Me</a>
     </div>
 
 		<script>
@@ -119,6 +105,36 @@
         window.onload = () => {
             createStars(150); // Create 150 stars
         };
+
+				function toggleBackground() {
+				    const body = document.querySelector('body');
+				    const buttons = document.querySelectorAll('.w3-button');
+				    const stars = document.querySelectorAll('.star');
+				    const copyright = document.getElementById('copyright');
+				
+				    if (body.style.background === 'white') {
+				        body.style.background = 'black';
+				        buttons.forEach(button => {
+				            button.style.backgroundColor = 'white';
+				            button.style.color = 'black';
+				            copyright.style.color = 'white';
+				        });
+				        stars.forEach(star => {
+				            star.style.backgroundColor = 'white';
+				        });
+				    } else {
+				        body.style.background = 'white';
+				        buttons.forEach(button => {
+				            button.style.backgroundColor = '#7e98ec';
+				            button.style.color = 'white';
+				            copyright.style.color = 'black';
+				        });
+				        stars.forEach(star => {
+				            star.style.backgroundColor = 'white';
+				        });
+				    }
+				}
+
     </script>
 
 </body>
