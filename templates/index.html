@@ -89,21 +89,30 @@
         {% endwith %}
 
         <form action="/" method="post" enctype="multipart/form-data" class="w3-container">
+						<input type="radio" name="fileMode" id="singleMode" value="single" checked>
+						<label for="singleMode">Single File Mode</label>
+
+    				<input type="radio" name="fileMode" id="multipleMode" value="multiple">
+    				<label for="multipleMode">Multiple Files Mode</label>
             <p>
-                <input class="w3-input w3-border" type="file" name="datafile" required>
+                <input class="w3-input w3-border" type="file" id="datafile" name="datafile" required>
             </p>
             <p>
                 <label for="headerlines" class="w3-text-black">Number of header lines:</label>
                 <input class="w3-input w3-border" type="number" id="headerlines" name="headerlines" value="0">
             </p>
             <p>
-                <button class="w3-btn w3-blue">Upload and Plot</button>
+                <label for="headerlines" class="w3-text-black">Column to plot (multiple files mode only):</label>
+                <input class="w3-input w3-border" type="number" id="colplot" name="colplot" value="1">
+            </p>
+            <p>
+                <button class="w3-btn w3-blue" id="upload-button">Upload and Plot</button>
             </p>
         </form>
     </div>
 
     <div class="footer-container">
-        <a id="copyright">Copyright &copy; 2024 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://discord.gg/UAJJVfQ5" target="_blank">Contact Me</a>
+        <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
     </div>
 
     <script>
@@ -211,6 +220,30 @@
             let currentTheme = localStorage.getItem('theme') || 'light';
             setTheme(currentTheme);
         };
+
+				const fileInput = document.getElementById('datafile');
+        const uploadButton = document.getElementById('upload-button');
+				const colplotbox = document.getElementById('colplot');
+
+				colplotbox.disabled = true;
+
+        // Function to handle file mode selection based on the radio button choice
+        const handleFileModeSelection = () => {
+            const selectedMode = document.querySelector('input[name="fileMode"]:checked').value;
+
+            if (selectedMode === 'multiple') {
+                fileInput.setAttribute('multiple', 'multiple');
+								colplotbox.disabled = false;
+            } else {
+                fileInput.removeAttribute('multiple');
+								colplotbox.disabled = true;
+            }
+        }
+
+        // Add event listener to the radio buttons to handle file mode selection
+        document.querySelectorAll('input[name="fileMode"]').forEach((radio) => {
+            radio.addEventListener('change', handleFileModeSelection);
+        });
     </script>
 
 		<script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>
