@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
     .centered-content {
-        width: 50%;   /* Set the width of the content */
+        width: 60%;   /* Set the width of the content */
         min-width: 800px; /* Optional: minimum width */
         background-color: white; /* Solid background for the content area */
         padding: 20px;
@@ -74,7 +74,7 @@
         <button onclick="toggleBackground()" class="w3-button w3-round">Dark/Light</button>
     </div>
 
-    <div class="centered-content w3-display-middle" style="width: 50%;">
+    <div class="centered-content w3-display-middle" style="width: 60%;">
         <a href="/" class="w3-button" id="return_button" style="margin-left:17px;background:#7e98ec;color:white">Return</a>
         <div class="w3-card-4 w3-margin">
             <div class="w3-container w3-padding">
@@ -82,11 +82,16 @@
                 <div>{{ plot_html|safe }}</div>
             </div>
         </div>
+				<p>
+						<a style="color: red"><b>N.B.</b> The uploaded data will be deleted after plotting.</a>
+						<br>
+						<a style="color: red"><b>N.B.</b> Refreshing current page will lead us back to the index page.</a>
+				</p>
     </div>
 
     <div class="footer-container">
         <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="ht
-tps://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
+tps://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
     </div>
 
     <script>

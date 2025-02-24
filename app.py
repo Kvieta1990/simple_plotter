@@ -4,7 +4,8 @@ from flask import \
     request, \
     redirect, \
     url_for, \
-    flash
+    flash, \
+    session
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -29,6 +30,10 @@ def index():
                 fn_save = str(uuid.uuid4()) + "." + file.filename.split(".")[1]
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], fn_save)
                 file.save(filepath)
+
+                session.pop('visited_plot', None)
+                session.modified = True
+
                 return redirect(
                     url_for(
                         'plot',
@@ -59,6 +64,9 @@ def index():
                 for fn_init in fns_init:
                     f.write("{0:s}\n".format(fn_init))
 
+            session.pop('visited_plot', None)
+            session.modified = True
+
             return redirect(
                 url_for(
                     'plot',
@@ -78,6 +86,13 @@ def plot(filename, filename_i):
     header_lines = request.args.get('headerlines', default=0, type=int)
     col_plot = request.args.get('col_plot', default=1, type=int)
     smode = request.args.get('single_mode', default=1, type=int)
+
+    print("[Info]", session)
+
+    if 'visited_plot' in session:
+        session.pop('visited_plot', None)
+        session.modified = True
+        return render_template('index.html')
 
     if smode == 1:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -107,11 +122,17 @@ def plot(filename, filename_i):
             y=df.columns[1:],
             height=600
         )
-        fig.update_layout(legend_title='Data')
+        fig.update_layout(
+            legend_title='Data',
+            height=800
+        )
         fig.update_xaxes(title_text='X')
         fig.update_yaxes(title_text='Y')
 
         plot_html = pio.to_html(fig, full_html=False)
+
+        session['visited_plot'] = True
+        session.modified = True
 
         return render_template('plot.html', plot_html=plot_html, fn=filename_i)
     else:
@@ -174,6 +195,9 @@ def plot(filename, filename_i):
         fig.update_yaxes(title_text='Y')
 
         plot_html = pio.to_html(fig, full_html=False)
+
+        session['visited_plot'] = True
+        session.modified = True
 
         return render_template(
             'plot.html',
