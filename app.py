@@ -81,11 +81,11 @@ def plot(filename, filename_i):
 
     if smode == 1:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        print("Debugging -> ", filepath)
         try:
             df = pd.read_csv(
                 filepath,
-                header=None if header_lines == 0 else header_lines,
+                skiprows=header_lines,
+                header=None,
                 delimiter=r'\s*,\s*|\s+'
             )
             df.columns = [f'column-{i}' for i in range(len(df.columns))]
@@ -94,6 +94,9 @@ def plot(filename, filename_i):
             error_message += "header lines, input it correctly in the box."
             flash(error_message, 'error')
             return redirect(url_for('index'))
+
+        # Remove the uploaded data file after reading, to save space.
+        os.remove(filepath)
 
         df = df.apply(pd.to_numeric, errors='coerce')
         df = df.dropna(axis=1, how='all')
@@ -118,6 +121,9 @@ def plot(filename, filename_i):
         with open(fns_init_f, "r") as f:
             lines = f.readlines()
 
+        # After reading, remove the file to save space
+        os.remove(fns_init_f)
+
         fig = go.Figure()
         for i in range(len(lines)):
             filepath = os.path.join(
@@ -128,7 +134,8 @@ def plot(filename, filename_i):
             try:
                 df = pd.read_csv(
                     filepath,
-                    header=None if header_lines == 0 else header_lines,
+                    skiprows=header_lines,
+                    header=None,
                     delimiter=r'\s*,\s*|\s+'
                 )
             except:  #noqa
@@ -155,6 +162,9 @@ def plot(filename, filename_i):
                 return redirect(url_for('index'))
 
             fig.add_trace(trace)
+
+            # Remove uploaded file after plotting to save space
+            os.remove(filepath)
 
         fig.update_layout(
             legend_title='Data',

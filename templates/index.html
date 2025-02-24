@@ -66,6 +66,14 @@
         .color-link:hover {
             color: #98ffb1; /* Text color when mouse hovers over the link */
         }
+				.hidden {
+				    display: none;
+    		}
+    		.clickable-text {
+    		    cursor: pointer;
+    		    text-decoration: underline;
+    		    color: blue;
+    		}
     </style>
 </head>
 <body>
@@ -79,7 +87,7 @@
     </div>
 
     <div class="centered-content w3-card-4 w3-padding w3-margin">
-        <h1 class="w3-center">Upload Data File</h1>
+        <h1 class="w3-center">Upload Data File(s)</h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -100,10 +108,14 @@
             <p>
                 <label for="headerlines" class="w3-text-black">Number of header lines:</label>
                 <input class="w3-input w3-border" type="number" id="headerlines" name="headerlines" value="0">
+								<span class="clickable-text" onclick="toggleVisibility('hiddenText')">Show/hide notes</span>
+                <span id="hiddenText" class="hidden">(it does NOT matter whether to include the empty lines in the counting)</span>
             </p>
             <p>
-                <label for="headerlines" class="w3-text-black">Column to plot (multiple files mode only):</label>
+                <label for="headerlines" class="w3-text-black">Column to plot:</label>
                 <input class="w3-input w3-border" type="number" id="colplot" name="colplot" value="1">
+								<span class="clickable-text" onclick="toggleVisibility('hiddenText1')">Show/hide notes</span>
+                <span id="hiddenText1" class="hidden">(This option is for multiple files mode only. DO NOT include the first column, as it will be used as X)</span>
             </p>
             <p>
                 <button class="w3-btn w3-blue" id="upload-button">Upload and Plot</button>
@@ -112,7 +124,7 @@
     </div>
 
     <div class="footer-container">
-        <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
+        <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
     </div>
 
     <script>
@@ -244,6 +256,22 @@
         document.querySelectorAll('input[name="fileMode"]').forEach((radio) => {
             radio.addEventListener('change', handleFileModeSelection);
         });
+
+				var text = document.getElementById('hiddenText');
+				var text1 = document.getElementById('hiddenText1');
+				text.style.display = "none";
+				text1.style.display = "none";
+
+				function toggleVisibility(textlabel) {
+				    var text = document.getElementById(textlabel);
+				    if (text.style.display === "none") {
+				        text.style.display = "inline";
+				    } else {
+				        text.style.display = "none";
+				    }
+				}
+
+				toggleVisibility();
     </script>
 
 		<script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>
