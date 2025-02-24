@@ -189,7 +189,7 @@ def plot(filename, filename_i):
 
         fig.update_layout(
             legend_title='Data',
-            height=600
+            height=800
         )
         fig.update_xaxes(title_text='X')
         fig.update_yaxes(title_text='Y')
