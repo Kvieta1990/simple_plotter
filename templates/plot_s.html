@@ -5,75 +5,70 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-				body {
-				    display: flex;
-				    flex-direction: column;
-				    min-height: 120vh;
-				    margin: 0;
-				    background-color: black;
-				    overflow: hidden;
-				    justify-content: center;
-				    align-items: center;
-				}
-		
-		.centered-content {
-		    width: 60%;
-		    min-width: 800px;
-		    background-color: white;
-		    padding: 20px;
-		    border-radius: 8px;
-		    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-		    margin-top: 900px;
-		    margin-left: -900px;
-		    overflow-y: auto;
-		    position: relative;
-		    z-index: 2;
-		}
-    .star {
-        position: absolute;
-        width: 5px;
-        height: 5px;
-        background: white;
-        border-radius: 50%;
-        box-shadow: 0 0 5px white;
-        animation: shine 1s infinite ease-in-out alternate;
-    }
-    @keyframes shine {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    .button-container {
-                    position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 3; /* Make sure buttons are above all other content */
-    }
-    .w3-button { /* Additional styling for buttons if needed */
-        margin: 0 4px; /* Spacing between buttons */
-        background-color: white; /* White background for each button */
-        color: black; /* Text color */
-    }
-    .footer-container {
-				background-color: grey;
-    width: 100%;
-    padding: 10px;
-    text-align: center;
-    /* Optionally ensure footer doesn't overlap with other content */
-    position: relative;
-    z-index: 3;
-        color: white;
-    }
-    .color-link {
-        color: #8a93ff; /* Text color for normal state */
-        text-decoration: none; /* Optional: removes underline from links */
-    }
-    .color-link:hover {
-        color: #98ffb1; /* Text color when mouse hovers over the link */
-    }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: black;
+            justify-content: flex-start; /* Changed from center to flex-start */
+        }
+        .centered-content {
+            width: 60%;
+            min-width: 800px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 80px auto; /* Centered horizontally and added top margin */
+            flex: 1; /* Ensure it grows to fill space */
+            overflow-y: auto;
+            position: relative;
+            z-index: 2;
+        }
+        .star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 5px white;
+            animation: shine 1s infinite ease-in-out alternate;
+        }
+        @keyframes shine {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .button-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 3;
+        }
+        .w3-button {
+            margin: 0 4px;
+            background-color: white;
+            color: black;
+        }
+        .footer-container {
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            position: relative;
+            z-index: 3;
+            color: white;
+            margin-top: auto; /* Push footer to the bottom */
+        }
+        .color-link {
+            color: #8a93ff;
+            text-decoration: none;
+        }
+        .color-link:hover {
+            color: #98ffb1;
+        }
     </style>
 </head>
 <body>
-
     <div class="button-container">
         <a href="/" class="w3-button w3-round">Home</a>
         <a href="https://www.ornl.gov/staff-profile/yuanpeng-zhang" target="_blank" class="w3-button w3-round">Yuanpeng's Profile</a>
@@ -82,7 +77,7 @@
         <button onclick="toggleBackground()" class="w3-button w3-round">Dark/Light</button>
     </div>
 
-    <div class="centered-content w3-display-middle" style="width: 60%;">
+    <div class="centered-content">
         <a href="/" class="w3-button" id="return_button" style="margin-left:17px;background:#7e98ec;color:white">Return</a>
         <div class="w3-card-4 w3-margin">
             <div class="w3-container w3-padding">
@@ -90,16 +85,15 @@
                 <div>{{ plot_html|safe }}</div>
             </div>
         </div>
-				<p>
-						<a style="color: red"><b>N.B.</b> The uploaded data will be deleted after plotting.</a>
-						<br>
-						<a style="color: red"><b>N.B.</b> Refreshing current page will lead us back to the index page.</a>
-				</p>
+        <p>
+            <a style="color: red"><b>N.B.</b> The uploaded data will be deleted after plotting.</a>
+            <br>
+            <a style="color: red"><b>N.B.</b> Refreshing current page will lead us back to the index page.</a>
+        </p>
     </div>
 
     <div class="footer-container">
-        <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="ht
-tps://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
+        <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="https://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
     </div>
 
     <script>
@@ -139,8 +133,8 @@ tps://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo<
                     sep2.style.color = 'white';
                     sep3.style.color = 'white';
                 });
-								document.getElementById('return_button').style.backgroundColor = '#7e98ec';
-								document.getElementById('return_button').style.color = 'white';
+                document.getElementById('return_button').style.backgroundColor = '#7e98ec';
+                document.getElementById('return_button').style.color = 'white';
                 stars.forEach(star => {
                     star.style.backgroundColor = 'white';
                 });
@@ -185,8 +179,8 @@ tps://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo<
                     sep2.style.color = 'white';
                     sep3.style.color = 'white';
                 });
-								document.getElementById('return_button').style.backgroundColor = '#7e98ec';
-								document.getElementById('return_button').style.color = 'white';
+                document.getElementById('return_button').style.backgroundColor = '#7e98ec';
+                document.getElementById('return_button').style.color = 'white';
                 stars.forEach(star => {
                     star.style.backgroundColor = 'white';
                 });
@@ -213,7 +207,7 @@ tps://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo<
         };
     </script>
 
-		<script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>
+    <script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>
 
 </body>
 </html>
