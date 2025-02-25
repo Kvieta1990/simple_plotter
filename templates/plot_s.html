@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ZYP - Data Plotter</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+    .centered-content {
+        width: 60%;   /* Set the width of the content */
+        min-width: 800px; /* Optional: minimum width */
+        background-color: white; /* Solid background for the content area */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        position: relative; /* Ensures it stays above the stars */
+        z-index: 2;
+				margin-top: 30px; /* Fix the top margin */
+				margin-bottom: 30px; /* Fix the top margin */
+        max-height: calc(120vh - 60px); /* Adjust max-height to fit within the viewport */
+        overflow-y: auto;
+    }
+    body {
+        background-color: black;
+        overflow: hidden;
+        margin-bottom: 10px;
+        height: 120vh;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .star {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 5px white;
+        animation: shine 1s infinite ease-in-out alternate;
+    }
+    @keyframes shine {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .button-container {
+                    position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 3; /* Make sure buttons are above all other content */
+    }
+    .w3-button { /* Additional styling for buttons if needed */
+        margin: 0 4px; /* Spacing between buttons */
+        background-color: white; /* White background for each button */
+        color: black; /* Text color */
+    }
+    .footer-container {
+        position: relative;
+				margin-top: 70px;
+        left: 10px;
+        z-index: 3;
+        color: white;
+    }
+    .color-link {
+        color: #8a93ff; /* Text color for normal state */
+        text-decoration: none; /* Optional: removes underline from links */
+    }
+    .color-link:hover {
+        color: #98ffb1; /* Text color when mouse hovers over the link */
+    }
+    </style>
+</head>
+<body>
+
+    <div class="button-container">
+        <a href="/" class="w3-button w3-round">Home</a>
+        <a href="https://www.ornl.gov/staff-profile/yuanpeng-zhang" target="_blank" class="w3-button w3-round">Yuanpeng's Profile</a>
+        <a href="https://me.iris-home.net" target="_blank" class="w3-button w3-round">Homepage</a>
+        <a href="https://iris2020.net" target="_blank" class="w3-button w3-round">Blog</a>
+        <button onclick="toggleBackground()" class="w3-button w3-round">Dark/Light</button>
+    </div>
+
+    <div class="centered-content w3-display-middle" style="width: 60%;">
+        <a href="/" class="w3-button" id="return_button" style="margin-left:17px;background:#7e98ec;color:white">Return</a>
+        <div class="w3-card-4 w3-margin">
+            <div class="w3-container w3-padding">
+                <h1 class="w3-center">{{ fn }}</h1>
+                <div>{{ plot_html|safe }}</div>
+            </div>
+        </div>
+				<p>
+						<a style="color: red"><b>N.B.</b> The uploaded data will be deleted after plotting.</a>
+						<br>
+						<a style="color: red"><b>N.B.</b> Refreshing current page will lead us back to the index page.</a>
+				</p>
+    </div>
+
+    <div class="footer-container">
+        <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="ht
+tps://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
+    </div>
+
+    <script>
+        function createStars(count) {
+            const sky = document.querySelector('body');
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.top = `${Math.random() * window.innerHeight}px`;
+                star.style.left = `${Math.random() * window.innerWidth}px`;
+                star.style.animationDuration = `${Math.random() * 3 + 1}s`; // Random duration between 1s and 4s
+                star.style.animationDelay = `${Math.random() * 3}s`; // Random delay
+                sky.appendChild(star);
+            }
+        }
+
+        function toggleBackground() {
+            const body = document.querySelector('body');
+            const buttons = document.querySelectorAll('.w3-button');
+            const stars = document.querySelectorAll('.star');
+            const copyright = document.getElementById('copyright');
+            const sep1 = document.getElementById('sep1');
+            const sep2 = document.getElementById('sep2');
+            const sep3 = document.getElementById('sep3');
+
+            // Check current theme
+            let currentTheme = localStorage.getItem('theme') || 'light'; // Default to 'light' if no theme is set
+
+            if (currentTheme === 'light') {
+                // Switch to dark theme
+                body.style.background = 'black';
+                buttons.forEach(button => {
+                    button.style.backgroundColor = 'white';
+                    button.style.color = 'black';
+                    copyright.style.color = 'white';
+                    sep1.style.color = 'white';
+                    sep2.style.color = 'white';
+                    sep3.style.color = 'white';
+                });
+								document.getElementById('return_button').style.backgroundColor = '#7e98ec';
+								document.getElementById('return_button').style.color = 'white';
+                stars.forEach(star => {
+                    star.style.backgroundColor = 'white';
+                });
+                // Update localStorage
+                localStorage.setItem('theme', 'dark');
+            } else {
+                // Switch to light theme
+                body.style.background = 'white';
+                buttons.forEach(button => {
+                    button.style.backgroundColor = '#7e98ec';
+                    button.style.color = 'white';
+                    copyright.style.color = 'black';
+                    sep1.style.color = 'black';
+                    sep2.style.color = 'black';
+                    sep3.style.color = 'black';
+                });
+                stars.forEach(star => {
+                    star.style.backgroundColor = 'white';
+                });
+                // Update localStorage
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function setTheme(theme) {
+            const body = document.querySelector('body');
+            const buttons = document.querySelectorAll('.w3-button');
+            const stars = document.querySelectorAll('.star');
+            const copyright = document.getElementById('copyright');
+            const sep1 = document.getElementById('sep1');
+            const sep2 = document.getElementById('sep2');
+            const sep3 = document.getElementById('sep3');
+
+            if (theme === 'dark') {
+                // Switch to dark theme
+                body.style.background = 'black';
+                buttons.forEach(button => {
+                    button.style.backgroundColor = 'white';
+                    button.style.color = 'black';
+                    copyright.style.color = 'white';
+                    sep1.style.color = 'white';
+                    sep2.style.color = 'white';
+                    sep3.style.color = 'white';
+                });
+								document.getElementById('return_button').style.backgroundColor = '#7e98ec';
+								document.getElementById('return_button').style.color = 'white';
+                stars.forEach(star => {
+                    star.style.backgroundColor = 'white';
+                });
+            } else {
+                body.style.background = 'white';
+                buttons.forEach(button => {
+                    button.style.backgroundColor = '#7e98ec';
+                    button.style.color = 'white';
+                    copyright.style.color = 'black';
+                    sep1.style.color = 'black';
+                    sep2.style.color = 'black';
+                    sep3.style.color = 'black';
+                });
+                stars.forEach(star => {
+                    star.style.backgroundColor = 'white';
+                });
+            }
+        }
+
+        window.onload = () => {
+            createStars(150); // Create 150 stars
+            let currentTheme = localStorage.getItem('theme') || 'light';
+            setTheme(currentTheme);
+        };
+    </script>
+
+		<script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>
+
+</body>
+</html>

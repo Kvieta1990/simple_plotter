@@ -231,6 +231,13 @@
             createStars(150); // Create 150 stars
             let currentTheme = localStorage.getItem('theme') || 'light';
             setTheme(currentTheme);
+
+						// Ensure Single File Mode is checked by default
+						const singleModeRadio = document.getElementById('singleMode');
+        		if (singleModeRadio) {
+        		    singleModeRadio.checked = true;
+        		}
+        		handleFileModeSelection(); // Call function to handle initial state based on default selection
         };
 
 				const fileInput = document.getElementById('datafile');

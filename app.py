@@ -84,6 +84,12 @@ def index():
 
 @app.route('/plot/<filename>/<filename_i>')
 def plot(filename, filename_i):
+    if 'visited_plot' in session:
+        if request.referrer and 'plot' in request.referrer:
+            session.pop('visited_plot', None)
+            session.modified = True
+            return render_template('index.html', redirected=True)
+
     header_lines = request.args.get('headerlines', default=0, type=int)
     col_plot = request.args.get('col_plot', default=1, type=int)
     smode = request.args.get('single_mode', default=1, type=int)
@@ -234,7 +240,7 @@ def plot(filename, filename_i):
                         "pad": {"t": 30},
                         "len": 0.9,
                         "x": 0.1,
-                        "y": -0.2 - i * .6 - 0.2,
+                        "y": -0.2 - i * .6 - .1,
                         "currentvalue": {"prefix": f"Scale data-{i + 1}: "},
                         "active": init_idx,
                         "steps": [
@@ -253,7 +259,7 @@ def plot(filename, filename_i):
                         "pad": {"t": 70},
                         "len": 0.9,
                         "x": 0.1,
-                        "y": -0.4 - i * .6 - 0.2,
+                        "y": -0.4 - i * .6 - .1,
                         "currentvalue": {"prefix": f"Offset data-{i + 1}: "},
                         "active": o_init_idx,
                         "steps": [
@@ -277,7 +283,7 @@ def plot(filename, filename_i):
                         "pad": {"t": 70},
                         "len": 0.9,
                         "x": 0.1,
-                        "y": -0.6 - i * .6 - 0.2,
+                        "y": -0.6 - i * .6 - .1,
                         "currentvalue": {"prefix": f"X-Offset data-{i + 1}: "},
                         "active": num_values,
                         "steps": [
@@ -310,11 +316,18 @@ def plot(filename, filename_i):
         session['visited_plot'] = True
         session.modified = True
 
-        return render_template(
-            'plot.html',
-            plot_html=plot_html,
-            fn="Plot For Multiple Data Files"
-        )
+        if len(all_ys) == 2:
+            return render_template(
+                'plot_s.html',
+                plot_html=plot_html,
+                fn="Plot For Multiple Data Files"
+            )
+        else:
+            return render_template(
+                'plot.html',
+                plot_html=plot_html,
+                fn="Plot For Multiple Data Files"
+            )
 
 
 if __name__ == '__main__':
