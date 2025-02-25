@@ -88,7 +88,7 @@ def plot(filename, filename_i):
         if request.referrer and 'plot' in request.referrer:
             session.pop('visited_plot', None)
             session.modified = True
-            return render_template('index.html', redirected=True)
+            return redirect(url_for('index'))
 
     header_lines = request.args.get('headerlines', default=0, type=int)
     col_plot = request.args.get('col_plot', default=1, type=int)
@@ -99,7 +99,7 @@ def plot(filename, filename_i):
     if 'visited_plot' in session:
         session.pop('visited_plot', None)
         session.modified = True
-        return render_template('index.html')
+        return render_template('index.html', redirected=True)
 
     if smode == 1:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
