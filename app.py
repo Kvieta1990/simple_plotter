@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import os
 import uuid
+import numpy as np
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'  # Ensure this directory exists
@@ -145,6 +146,9 @@ def plot(filename, filename_i):
         # After reading, remove the file to save space
         os.remove(fns_init_f)
 
+        all_xs = list()
+        all_ys = list()
+
         fig = go.Figure()
         for i in range(len(lines)):
             filepath = os.path.join(
@@ -184,13 +188,120 @@ def plot(filename, filename_i):
 
             fig.add_trace(trace)
 
+            all_xs.append(df.iloc[:, 0])
+            all_ys.append(df.iloc[:, col_plot])
+
             # Remove uploaded file after plotting to save space
             os.remove(filepath)
 
-        fig.update_layout(
-            legend_title='Data',
-            height=800
-        )
+        num_values = 10
+        yminmin = np.inf
+        ymaxmax = -np.inf
+        for yl in all_ys:
+            ydiff = max(yl) - min(yl)
+            if ydiff < yminmin:
+                yminmin = ydiff
+            if ydiff > ymaxmax:
+                ymaxmax = ydiff
+        
+        scale_u = ymaxmax / yminmin * 1.5
+        scale_l = 1. / scale_u
+        offset_u = ymaxmax - yminmin
+        offset_l = -offset_u
+
+        def update_data_gen(scale, offset, pos):
+            tmp = scale * all_ys[pos] + offset
+            return [tmp if i == pos else all_ys[i] for i in range(len(all_ys))]
+        
+        def update_x_gen(offset, pos):
+            tmp = all_xs[pos] + offset
+            return [tmp if i == pos else all_xs[i] for i in range(len(all_xs))]
+
+        scale_arr = np.linspace(scale_l, scale_u, 20)
+        init_idx = np.abs(scale_arr - 1.).argmin()
+        scale_arr[init_idx] = 1.
+        offset_arr = np.linspace(offset_l, offset_u, 20)
+        o_init_idx = np.abs(offset_arr).argmin()
+        offset_arr[o_init_idx] = 0.
+
+        if len(all_ys) == 2:
+            sliders_list = list()
+            for i in range(len(all_ys)):
+                sliders_list.append(
+                    {
+                        "yanchor": "bottom",
+                        "xanchor": "left",
+                        "pad": {"t": 30},
+                        "len": 0.9,
+                        "x": 0.1,
+                        "y": -0.2 - i * .6 - 0.2,
+                        "currentvalue": {"prefix": f"Scale data-{i + 1}: "},
+                        "active": init_idx,
+                        "steps": [
+                            {
+                                "label": "{0:.2e}".format(s),
+                                "method": "update",
+                                "args": [{"y": update_data_gen(s, 0, i)}]
+                            } for s in scale_arr
+                        ],
+                    }
+                )
+                sliders_list.append(
+                    {
+                        "yanchor": "bottom",
+                        "xanchor": "left",
+                        "pad": {"t": 70},
+                        "len": 0.9,
+                        "x": 0.1,
+                        "y": -0.4 - i * .6 - 0.2,
+                        "currentvalue": {"prefix": f"Offset data-{i + 1}: "},
+                        "active": o_init_idx,
+                        "steps": [
+                            {
+                                "label": "{0:.2e}".format(o),
+                                "method": "update",
+                                "args": [{"y": update_data_gen(1, o, i)}]
+                            } for o in offset_arr
+                        ],
+                    }
+                )
+                x_int = all_xs[i][1] - all_xs[i][0]
+                positive_values = np.linspace(x_int, num_values * x_int, num_values)
+                negative_values = np.linspace(-x_int, -num_values * x_int, num_values)[::-1]
+                xo_array = np.concatenate((negative_values, [0], positive_values))
+                xo_array = np.array(xo_array)
+                sliders_list.append(
+                    {
+                        "yanchor": "bottom",
+                        "xanchor": "left",
+                        "pad": {"t": 70},
+                        "len": 0.9,
+                        "x": 0.1,
+                        "y": -0.6 - i * .6 - 0.2,
+                        "currentvalue": {"prefix": f"X-Offset data-{i + 1}: "},
+                        "active": num_values,
+                        "steps": [
+                            {
+                                "label": "{0:.2e}".format(o),
+                                "method": "update",
+                                "args": [{"x": update_x_gen(o, 0)}]
+                            } for o in xo_array
+                        ],
+                    }
+                )
+
+        if len(all_ys) == 2:
+            fig.update_layout(
+                legend_title='Data',
+                height=1200,
+                sliders=sliders_list
+            )
+        else:
+            fig.update_layout(
+                legend_title='Data',
+                height=800
+            )
+
         fig.update_xaxes(title_text='X')
         fig.update_yaxes(title_text='Y')
 
