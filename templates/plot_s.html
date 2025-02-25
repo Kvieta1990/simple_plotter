@@ -5,29 +5,30 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-    .centered-content {
-        width: 60%;   /* Set the width of the content */
-        min-width: 800px; /* Optional: minimum width */
-        background-color: white; /* Solid background for the content area */
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        position: relative; /* Ensures it stays above the stars */
-        z-index: 2;
-				margin-top: 30px; /* Fix the top margin */
-				margin-bottom: 30px; /* Fix the top margin */
-        max-height: calc(120vh - 60px); /* Adjust max-height to fit within the viewport */
-        overflow-y: auto;
-    }
-    body {
-        background-color: black;
-        overflow: hidden;
-        margin-bottom: 10px;
-        height: 120vh;
-        justify-content: center;
-        align-items: center;
-    }
-
+				body {
+				    display: flex;
+				    flex-direction: column;
+				    min-height: 120vh;
+				    margin: 0;
+				    background-color: black;
+				    overflow: hidden;
+				    justify-content: center;
+				    align-items: center;
+				}
+		
+		.centered-content {
+		    width: 60%;
+		    min-width: 800px;
+		    background-color: white;
+		    padding: 20px;
+		    border-radius: 8px;
+		    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+		    margin-top: 900px;
+		    margin-left: -900px;
+		    overflow-y: auto;
+		    position: relative;
+		    z-index: 2;
+		}
     .star {
         position: absolute;
         width: 5px;
@@ -53,10 +54,13 @@
         color: black; /* Text color */
     }
     .footer-container {
-        position: relative;
-				margin-top: 70px;
-        left: 10px;
-        z-index: 3;
+				background-color: grey;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    /* Optionally ensure footer doesn't overlap with other content */
+    position: relative;
+    z-index: 3;
         color: white;
     }
     .color-link {
