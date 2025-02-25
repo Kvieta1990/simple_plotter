@@ -90,15 +90,15 @@
                 <div id="plot"></div>
 								<!-- Sliders for Dataset 1 -->
 								<div>
-										<label>Dataset-1 Y-Scale: <input type="range" id="scale1" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 100 }}" value="1"></label>
-    						    <label>Y-Offset: <input type="range" id="yOffset1" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 100 }}" value="0"></label>
+										<label>Dataset-1 Y-Scale: <input type="range" id="scale1" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 1000 }}" value="1"></label>
+    						    <label>Y-Offset: <input type="range" id="yOffset1" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 1000 }}" value="0"></label>
     						    <label>X-Offset: <input type="range" id="xOffset1" min="{{ -trans_params[4] * 20 }}" max="{{ trans_params[4] * 20}}" step="{{ trans_params[4] }}" value="0"></label>
     						</div>
 
     						<!-- Sliders for Dataset 2 -->
     						<div>
-										<label>Dataset-2 Y-Scale: <input type="range" id="scale2" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 100 }}" value="1"></label>
-    						    <label>Y-Offset: <input type="range" id="yOffset2" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 100 }}" value="0"></label>
+										<label>Dataset-2 Y-Scale: <input type="range" id="scale2" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 1000 }}" value="1"></label>
+    						    <label>Y-Offset: <input type="range" id="yOffset2" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 1000 }}" value="0"></label>
     						    <label>X-Offset: <input type="range" id="xOffset2" min="{{ -trans_params[5] * 20 }}" max="{{ trans_params[5] * 20}}" step="{{ trans_params[5] }}" value="0"></label>
     						</div>
 
