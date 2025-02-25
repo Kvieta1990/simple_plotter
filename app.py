@@ -215,9 +215,14 @@ def plot(filename, filename_i):
         offset_u = ymaxmax - yminmin
         offset_l = -offset_u
 
+        current_scale = [1.] * len(all_ys)
+        current_offset = [0.] * len(all_ys)
+
         def update_data_gen(scale, offset, pos):
             tmp = scale * all_ys[pos] + offset
-            return [tmp if i == pos else all_ys[i] for i in range(len(all_ys))]
+            current_scale[pos] = scale
+            current_offset[pos] = offset
+            return [tmp if i == pos else current_scale[i] * all_ys[i] + current_offset[i] for i in range(len(all_ys))]
         
         def update_x_gen(offset, pos):
             tmp = all_xs[pos] + offset
@@ -290,7 +295,7 @@ def plot(filename, filename_i):
                             {
                                 "label": "{0:.2e}".format(o),
                                 "method": "update",
-                                "args": [{"x": update_x_gen(o, 0)}]
+                                "args": [{"x": update_x_gen(o, i)}]
                             } for o in xo_array
                         ],
                     }
