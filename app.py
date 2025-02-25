@@ -10,9 +10,11 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
+import plotly
 import os
 import uuid
 import numpy as np
+import json
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'  # Ensure this directory exists
@@ -146,8 +148,15 @@ def plot(filename, filename_i):
         fns_init_f = os.path.join(
             app.config['UPLOAD_FOLDER'], filename + "_mfn.tmp"
         )
-        with open(fns_init_f, "r") as f:
-            lines = f.readlines()
+        try:
+            with open(fns_init_f, "r") as f:
+                lines = f.readlines()
+        except:  # noqa
+            error_message = "Error occurs while refreshing, possibly due to "
+            error_message += "data already deleted."
+            flash(error_message, 'error')
+            return redirect(url_for('index'))
+
 
         # After reading, remove the file to save space
         os.remove(fns_init_f)
@@ -215,14 +224,6 @@ def plot(filename, filename_i):
         offset_u = ymaxmax - yminmin
         offset_l = -offset_u
 
-        def update_data_gen(scale, offset, pos):
-            tmp = scale * all_ys[pos] + offset
-            return [tmp if i == pos else all_ys[i] for i in range(len(all_ys))]
-        
-        def update_x_gen(offset, pos):
-            tmp = all_xs[pos] + offset
-            return [tmp if i == pos else all_xs[i] for i in range(len(all_xs))]
-
         scale_arr = np.linspace(scale_l, scale_u, 20)
         init_idx = np.abs(scale_arr - 1.).argmin()
         scale_arr[init_idx] = 1.
@@ -230,77 +231,17 @@ def plot(filename, filename_i):
         o_init_idx = np.abs(offset_arr).argmin()
         offset_arr[o_init_idx] = 0.
 
-        if len(all_ys) == 2:
-            sliders_list = list()
-            for i in range(len(all_ys)):
-                sliders_list.append(
-                    {
-                        "yanchor": "bottom",
-                        "xanchor": "left",
-                        "pad": {"t": 30},
-                        "len": 0.9,
-                        "x": 0.1,
-                        "y": -0.2 - i * .6 - .1,
-                        "currentvalue": {"prefix": f"Scale data-{i + 1}: "},
-                        "active": init_idx,
-                        "steps": [
-                            {
-                                "label": "{0:.2e}".format(s),
-                                "method": "update",
-                                "args": [{"y": update_data_gen(s, 0, i)}]
-                            } for s in scale_arr
-                        ],
-                    }
-                )
-                sliders_list.append(
-                    {
-                        "yanchor": "bottom",
-                        "xanchor": "left",
-                        "pad": {"t": 70},
-                        "len": 0.9,
-                        "x": 0.1,
-                        "y": -0.4 - i * .6 - .1,
-                        "currentvalue": {"prefix": f"Offset data-{i + 1}: "},
-                        "active": o_init_idx,
-                        "steps": [
-                            {
-                                "label": "{0:.2e}".format(o),
-                                "method": "update",
-                                "args": [{"y": update_data_gen(1, o, i)}]
-                            } for o in offset_arr
-                        ],
-                    }
-                )
-                x_int = all_xs[i][1] - all_xs[i][0]
-                positive_values = np.linspace(x_int, num_values * x_int, num_values)
-                negative_values = np.linspace(-x_int, -num_values * x_int, num_values)[::-1]
-                xo_array = np.concatenate((negative_values, [0], positive_values))
-                xo_array = np.array(xo_array)
-                sliders_list.append(
-                    {
-                        "yanchor": "bottom",
-                        "xanchor": "left",
-                        "pad": {"t": 70},
-                        "len": 0.9,
-                        "x": 0.1,
-                        "y": -0.6 - i * .6 - .1,
-                        "currentvalue": {"prefix": f"X-Offset data-{i + 1}: "},
-                        "active": num_values,
-                        "steps": [
-                            {
-                                "label": "{0:.2e}".format(o),
-                                "method": "update",
-                                "args": [{"x": update_x_gen(o, i)}]
-                            } for o in xo_array
-                        ],
-                    }
-                )
+        trans_params = [
+            scale_u, scale_l,
+            offset_u, offset_l,
+            all_xs[0][1] - all_xs[0][0],
+            all_xs[1][1] - all_xs[1][0]
+        ]
 
         if len(all_ys) == 2:
             fig.update_layout(
                 legend_title='Data',
-                height=1200,
-                sliders=sliders_list
+                height=900
             )
         else:
             fig.update_layout(
@@ -317,10 +258,16 @@ def plot(filename, filename_i):
         session.modified = True
 
         if len(all_ys) == 2:
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
             return render_template(
                 'plot_s.html',
-                plot_html=plot_html,
-                fn="Plot For Multiple Data Files"
+                graphJSON=graphJSON,
+                initial_x1=json.dumps(all_xs[0].tolist()),
+                initial_x2=json.dumps(all_xs[1].tolist()),
+                initial_y1=json.dumps(all_ys[0].tolist()),
+                initial_y2=json.dumps(all_ys[1].tolist()),
+                trans_params=trans_params
             )
         else:
             return render_template(

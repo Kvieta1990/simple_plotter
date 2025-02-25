@@ -66,7 +66,12 @@
         .color-link:hover {
             color: #98ffb1;
         }
+				input[type=range] {
+            width: 300px; /* Adjust the width as needed */
+        }
     </style>
+		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="button-container">
@@ -82,7 +87,24 @@
         <div class="w3-card-4 w3-margin">
             <div class="w3-container w3-padding">
                 <h1 class="w3-center">{{ fn }}</h1>
-                <div>{{ plot_html|safe }}</div>
+                <div id="plot"></div>
+								<!-- Sliders for Dataset 1 -->
+								<div>
+										<label>Dataset-1 Y-Scale: <input type="range" id="scale1" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 100 }}" value="1"></label>
+    						    <label>Y-Offset: <input type="range" id="yOffset1" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 100 }}" value="0"></label>
+    						    <label>X-Offset: <input type="range" id="xOffset1" min="{{ -trans_params[4] * 20 }}" max="{{ trans_params[4] * 20}}" step="{{ trans_params[4] }}" value="0"></label>
+    						</div>
+
+    						<!-- Sliders for Dataset 2 -->
+    						<div>
+										<label>Dataset-2 Y-Scale: <input type="range" id="scale2" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 100 }}" value="1"></label>
+    						    <label>Y-Offset: <input type="range" id="yOffset2" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 100 }}" value="0"></label>
+    						    <label>X-Offset: <input type="range" id="xOffset2" min="{{ -trans_params[5] * 20 }}" max="{{ trans_params[5] * 20}}" step="{{ trans_params[5] }}" value="0"></label>
+    						</div>
+
+								<br />
+
+								<button class="w3-button" id="resetButton">Reset All Sliders</button>
             </div>
         </div>
         <p>
@@ -205,6 +227,58 @@
             let currentTheme = localStorage.getItem('theme') || 'light';
             setTheme(currentTheme);
         };
+
+				var graphs = {{ graphJSON|safe }};
+        var initialX1 = {{ initial_x1|safe }};
+        var initialX2 = {{ initial_x2|safe }};
+        var initialY1 = {{ initial_y1|safe }};
+        var initialY2 = {{ initial_y2|safe }};
+
+        Plotly.newPlot('plot', graphs.data, graphs.layout);
+
+        function updatePlot() {
+            var scale1 = parseFloat($('#scale1').val());
+            var yOffset1 = parseFloat($('#yOffset1').val());
+            var xOffset1 = parseFloat($('#xOffset1').val());
+            
+            var scale2 = parseFloat($('#scale2').val());
+            var yOffset2 = parseFloat($('#yOffset2').val());
+            var xOffset2 = parseFloat($('#xOffset2').val());
+
+            var update1 = {
+                'x': [initialX1.map(x => x + xOffset1)],
+                'y': [initialY1.map(y => y * scale1 + yOffset1)]
+            };
+            
+            var update2 = {
+                'x': [initialX2.map(x => x + xOffset2)],
+                'y': [initialY2.map(y => y * scale2 + yOffset2)]
+            };
+            
+            Plotly.update('plot', update1, {}, [0]);
+            Plotly.update('plot', update2, {}, [1]);
+        }
+
+				function resetSliders() {
+            $('#scale1').val(1);
+            $('#yOffset1').val(0);
+            $('#xOffset1').val(0);
+            $('#scale2').val(1);
+            $('#yOffset2').val(0);
+            $('#xOffset2').val(0);
+
+						var trace1Name = graphs.data[0].name;
+            var trace2Name = graphs.data[1].name;
+
+            // Reset plot to initial data
+            Plotly.newPlot('plot', [
+                {x: initialX1, y: initialY1, mode: 'lines', name: trace1Name},
+                {x: initialX2, y: initialY2, mode: 'lines', name: trace2Name}
+            ], graphs.layout);
+        }
+        
+        $('input[type=range]').on('input', updatePlot);
+				$('#resetButton').on('click', resetSliders);
     </script>
 
     <script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>
