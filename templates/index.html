@@ -17,8 +17,7 @@
             overflow: hidden;
         }
         .centered-content {
-            width: 40%;   /* Set the width of the content */
-            min-width: 800px; /* Optional: minimum width */
+            width: 1050px;   /* Set the width of the content */
             background-color: white; /* Solid background for the content area */
             padding: 20px;
             border-radius: 8px;
@@ -74,6 +73,14 @@
     		    text-decoration: underline;
     		    color: blue;
     		}
+				select {
+            width: 80px;
+        }
+	label {
+            margin-right: 10px;
+	    width: 450px;
+        }
+
     </style>
 </head>
 <body>
@@ -96,31 +103,60 @@
             {% endif %}
         {% endwith %}
 
+				<p>
+	<a style="color: blue"><b>N.B. </b>Plot plain-text data file(s) with multiple columns. Two modes are available, <b><i>Single File Mode</i></b> and <b><i>Multiple Files Mode</i></b>.</a>
+	    <br>
+	    <a style="color: blue"><b>N.B. </b>In the Single File Mode, only one file button is available. Select a file, specify the number of header lines, and plot <b><i>all columns</i></b>.</a>
+	    <br>
+	    <a style="color: blue"><b>N.B. </b>In the Multiple Files Mode, use '# of Folders' to hop into different folders. <b><i>In each folder, you can select multiple files</i></b>.</a>
+	    <br>
+	    <a style="color: blue"><b>N.B. </b>In both modes, the input for <b><i>number of header lines is optional</i></b>. However, in case of failure, you still need to input a value.</a>
+	   </p>
         <form action="/" method="post" enctype="multipart/form-data" class="w3-container">
-						<input type="radio" name="fileMode" id="singleMode" value="single" checked>
-						<label for="singleMode">Single File Mode</label>
 
-    				<input type="radio" name="fileMode" id="multipleMode" value="multiple">
-    				<label for="multipleMode">Multiple Files Mode</label>
-            <p>
-                <input class="w3-input w3-border" type="file" id="datafile" name="datafile" required>
-            </p>
+	    <div style="display: flex; align-items: center;">
+            <input type="radio" name="fileMode" id="singleMode" value="single" checked onclick="disableDropdown()">
+            <label for="singleMode">Single File Mode</label>
+
+            <input type="radio" name="fileMode" id="multipleMode" value="multiple" onclick="enableDropdown()">
+            <label for="multipleMode">Multiple Files Mode</label>
+
+            <label for="numFiles" class="w3-text-black" style="margin-left: 20px;"># of Folders:</label>
+            <select id="numFiles" name="numFiles" class="w3-select" onchange="addFileInputs()" disabled style="margin-left: 10px;">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+
+            <div id="fileInputs">
+		<br>
+                <input class="w3-input w3-border" type="file" id="datafile1" name="datafile1" required>
+            </div>
             <p>
                 <label for="headerlines" class="w3-text-black">Number of header lines:</label>
-                <input class="w3-input w3-border" type="number" id="headerlines" name="headerlines" value="0">
-								<span class="clickable-text" onclick="toggleVisibility('hiddenText')">Show/hide notes</span>
-                <span id="hiddenText" class="hidden">(it does NOT matter whether to include the empty lines in the counting)</span>
+                <input class="w3-input w3-border" type="number" id="headerlines" name="headerlines" value="0" min="0" step="1">
+		<span class="clickable-text" onclick="toggleVisibility('hiddenText')">Show/hide notes</span>
+		<span id="hiddenText" class="hidden"><br />Leaving the input as '0', we will try to figure out the number of header lines and skip them.<br />In case of failure in data loading, please specify the number of header lines explicitly.<br />Empty lines are better to be included while counting the number of header lines.</span>
             </p>
             <p>
                 <label for="headerlines" class="w3-text-black">Column to plot:</label>
-                <input class="w3-input w3-border" type="number" id="colplot" name="colplot" value="1">
-								<span class="clickable-text" onclick="toggleVisibility('hiddenText1')">Show/hide notes</span>
+                <input class="w3-input w3-border" type="number" id="colplot" name="colplot" value="1" min="1" step="1">
+		<span class="clickable-text" onclick="toggleVisibility('hiddenText1')">Show/hide notes</span>
                 <span id="hiddenText1" class="hidden">(This option is for Multiple Files Mode only. DO NOT count the first column, as it will be used as X)</span>
             </p>
             <p>
-                <button class="w3-btn w3-blue" id="upload-button">Upload and Plot</button>
+                <button id="upload-button">Upload and Plot</button>
             </p>
         </form>
+
     </div>
 
     <div class="footer-container">
@@ -227,27 +263,39 @@
             }
         }
 
-        window.onload = () => {
-            createStars(150); // Create 150 stars
+				window.onload = () => {
+						createStars(150); // Create 150 stars
             let currentTheme = localStorage.getItem('theme') || 'light';
             setTheme(currentTheme);
 
-						// Ensure Single File Mode is checked by default
-						const singleModeRadio = document.getElementById('singleMode');
-        		if (singleModeRadio) {
-        		    singleModeRadio.checked = true;
-        		}
-        		handleFileModeSelection(); // Call function to handle initial state based on default selection
-        };
+				    const singleModeRadio = document.getElementById('singleMode');
+				    if (singleModeRadio) {
+				        singleModeRadio.checked = true;
+				    }
+				    handleFileModeSelection();
+				    var fileInputsDiv = document.getElementById('fileInputs');
+				    fileInputsDiv.innerHTML = ''; // Clear previous file inputs
+				    
+				    for (var i = 1; i <= 1; i++) {
+				        var fileInput = document.createElement('input');
+				        var lineBreak = document.createElement('br');
+				        fileInputsDiv.appendChild(lineBreak);
+				        fileInput.setAttribute('type', 'file');
+				        fileInput.setAttribute('name', 'datafile' + i);
+				        fileInput.setAttribute('id', 'datafile' + i);
+				        fileInput.setAttribute('required', 'true');
+				        fileInput.setAttribute('class', 'w3-input w3-border');
+				        fileInputsDiv.appendChild(fileInput);
+				    }
+				};
 
-				const fileInput = document.getElementById('datafile');
-        const uploadButton = document.getElementById('upload-button');
-				const colplotbox = document.getElementById('colplot');
+						const fileInput = document.getElementById('datafile1');
+						const colplotbox = document.getElementById('colplot');
 
-				colplotbox.disabled = true;
+						colplotbox.disabled = true;
 
-        // Function to handle file mode selection based on the radio button choice
-        const handleFileModeSelection = () => {
+						// Function to handle file mode selection based on the radio button choice
+						const handleFileModeSelection = () => {
             const selectedMode = document.querySelector('input[name="fileMode"]:checked').value;
 
             if (selectedMode === 'multiple') {
@@ -264,21 +312,84 @@
             radio.addEventListener('change', handleFileModeSelection);
         });
 
-				var text = document.getElementById('hiddenText');
-				var text1 = document.getElementById('hiddenText1');
-				text.style.display = "none";
-				text1.style.display = "none";
+	var text = document.getElementById('hiddenText');
+	var text1 = document.getElementById('hiddenText1');
+	text.style.display = "none";
+	text1.style.display = "none";
 
-				function toggleVisibility(textlabel) {
-				    var text = document.getElementById(textlabel);
-				    if (text.style.display === "none") {
-				        text.style.display = "inline";
-				    } else {
-				        text.style.display = "none";
-				    }
+	function toggleVisibility(textlabel) {
+	    var text = document.getElementById(textlabel);
+	    if (text.style.display === "none") {
+	        text.style.display = "inline";
+	    } else {
+	        text.style.display = "none";
+	    }
+	}
+
+	toggleVisibility();
+
+	function addFileInputs() {
+		  var numFiles = document.getElementById('numFiles').value;
+    	var fileInputsDiv = document.getElementById('fileInputs');
+	    var selectedFiles = Array.from(document.getElementById('fileInputs').getElementsByTagName('input'));
+    	fileInputsDiv.innerHTML = ''; // Clear previous file inputs
+	    var selectedMode = document.querySelector('input[name="fileMode"]:checked').value;
+
+    	var lineBreak = document.createElement('br');
+    	fileInputsDiv.appendChild(lineBreak);
+
+				selectedFiles.forEach(function(fileInput, index) {
+				if (index < numFiles) {
+						if (selectedMode === 'multiple') {
+								fileInput.setAttribute('multiple', 'multiple');
+						} else {
+								fileInput.removeAttribute('multiple');
+						}
+						fileInput.setAttribute('required', 'true');
+						fileInput.setAttribute('class', 'w3-input w3-border');
+	          fileInputsDiv.appendChild(fileInput);
+	          if (index < selectedFiles.length - 1) {
+								var lineBreak = document.createElement('br');
+	    	        fileInputsDiv.appendChild(lineBreak);
+	            }
 				}
+	    });
 
-				toggleVisibility();
+	  if (numFiles > selectedFiles.length) {
+				var lineBreak = document.createElement('br');
+				fileInputsDiv.appendChild(lineBreak);
+    	  for (var i = 1; i <= (numFiles - selectedFiles.length); i++) {
+						var fileInput = document.createElement('input');
+    	    	fileInput.setAttribute('type', 'file');
+    	    	fileInput.setAttribute('name', 'datafile' + i);
+    	    	fileInput.setAttribute('id', 'datafile' + i);
+	    	    if (selectedMode === 'multiple') {
+	    	        fileInput.setAttribute('multiple', 'multiple');
+	    	    }
+	    	    fileInput.setAttribute('required', 'true');
+    	    	fileInput.setAttribute('class', 'w3-input w3-border');
+    	    	fileInputsDiv.appendChild(fileInput);
+
+	    	    if (i < (numFiles - selectedFiles.length)) {
+    	    	        var lineBreak = document.createElement('br');
+    	    	        fileInputsDiv.appendChild(lineBreak);
+	    	    }
+				}
+    }
+
+		}
+
+    	function disableDropdown() {
+    	    document.getElementById('numFiles').setAttribute('disabled', 'true');
+    	    document.getElementById('numFiles').value = '1';
+    	    addFileInputs();
+    	}
+
+    	function enableDropdown() {
+    	    document.getElementById('numFiles').removeAttribute('disabled');
+    	    addFileInputs();
+    	}
+
     </script>
 
 		<script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>

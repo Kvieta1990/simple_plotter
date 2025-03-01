@@ -5,29 +5,29 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            background-color: black;
-            justify-content: flex-start; /* Changed from center to flex-start */
-						overflow-x: auto;
-        }
-        .centered-content {
-            width: 60%;
-            min-width: 1800px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin: 80px auto; /* Centered horizontally and added top margin */
-            flex: 1; /* Ensure it grows to fill space */
-            overflow-y: auto;
-            position: relative;
-            z-index: 2;
-						margin-bottom: -5px;
-        }
+				body {
+    display: flex;
+    flex-direction: column;
+    max-height:1300px;
+    margin: 0;
+    background-color: black;
+    justify-content: flex-start; /* Changed from center to flex-start */
+    overflow-x: auto;
+}
+.centered-content {
+    width: 60%;
+    min-width: 1700px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 80px auto; /* Centered horizontally and added top margin */
+    flex: 1; /* Ensure it grows to fill space */
+    overflow-y: auto;
+    position: relative;
+    z-index: 2;
+    max-height:1150px;
+}
         .star {
             position: absolute;
             width: 5px;
@@ -52,15 +52,13 @@
             background-color: white;
             color: black;
         }
-        .footer-container {
-            width: 100%;
-            padding: 10px;
-            text-align: left;
-            position: relative;
-            z-index: 3;
-            color: white;
-            margin-top: auto; /* Push footer to the bottom */
-        }
+				.footer-container {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 3;
+    color: white;
+}
         .color-link {
             color: #8a93ff;
             text-decoration: none;
@@ -84,28 +82,31 @@
         <button onclick="toggleBackground()" class="w3-button w3-round">Dark/Light</button>
     </div>
 
-    <div class="centered-content">
+		<div class="centered-content" style="width: 60%;">
         <a href="/" class="w3-button" id="return_button" style="margin-left:17px;background:#7e98ec;color:white">Return</a>
         <div class="w3-card-4 w3-margin">
             <div class="w3-container w3-padding">
                 <h1 class="w3-center">{{ fn }}</h1>
                 <div id="plot"></div>
 								<!-- Sliders for Dataset 1 -->
-								<div>
-										<label>Dataset-1 Y-Scale: <input type="range" id="scale1" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 1000 }}" value="1"></label>
-    						    <label>Y-Offset: <input type="range" id="yOffset1" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 1000 }}" value="0"></label>
-    						    <label>X-Offset: <input type="range" id="xOffset1" min="{{ -trans_params[4] * 20 }}" max="{{ trans_params[4] * 20}}" step="{{ trans_params[4] }}" value="0"></label>
-    						</div>
-
-    						<!-- Sliders for Dataset 2 -->
-    						<div>
-										<label>Dataset-2 Y-Scale: <input type="range" id="scale2" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 1000 }}" value="1"></label>
-    						    <label>Y-Offset: <input type="range" id="yOffset2" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 1000 }}" value="0"></label>
-    						    <label>X-Offset: <input type="range" id="xOffset2" min="{{ -trans_params[5] * 20 }}" max="{{ trans_params[5] * 20}}" step="{{ trans_params[5] }}" value="0"></label>
-    						</div>
-
+								<div style="margin-left: 5px;">
+								    <label>Dataset-1 Y-Scale: <input type="range" id="scale1" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 1000 }}" value="1"></label>
+								    <span id="scale1Value" class="slider-value"></span>
+    								    <label>Y-Offset: <input type="range" id="yOffset1" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 1000 }}" value="0"></label>
+								    <span id="yOffset1Value" class="slider-value"></span>
+    								    <label>X-Offset: <input type="range" id="xOffset1" min="{{ -trans_params[4] * 20 }}" max="{{ trans_params[4] * 20}}" step="{{ trans_params[4] }}" value="0"></label>
+								    <span id="xOffset1Value" class="slider-value"></span>
+    								</div>
+    								<!-- Sliders for Dataset 2 -->
+    								<div style="margin-left: 5px;">
+								    <label>Dataset-2 Y-Scale: <input type="range" id="scale2" min="{{ trans_params[1] }}" max="{{ trans_params[0] }}" step="{{ (trans_params[0] - trans_params[1]) / 1000 }}" value="1"></label>
+								    <span id="scale2Value" class="slider-value"></span>
+    								    <label>Y-Offset: <input type="range" id="yOffset2" min="{{ trans_params[3] }}" max="{{ trans_params[2] }}" step="{{ (trans_params[2] - trans_params[3]) / 1000 }}" value="0"></label>
+								    <span id="yOffset2Value" class="slider-value"></span>
+    								    <label>X-Offset: <input type="range" id="xOffset2" min="{{ -trans_params[5] * 20 }}" max="{{ trans_params[5] * 20}}" step="{{ trans_params[5] }}" value="0"></label>
+								    <span id="xOffset2Value" class="slider-value"></span>
+    								</div>
 								<br />
-
 								<button class="w3-button" id="resetButton">Reset All Sliders</button>
             </div>
         </div>
@@ -261,7 +262,7 @@
             Plotly.update('plot', update2, {}, [1]);
         }
 
-				function resetSliders() {
+	function resetSliders() {
             $('#scale1').val(1);
             $('#yOffset1').val(0);
             $('#xOffset1').val(0);
@@ -269,7 +270,7 @@
             $('#yOffset2').val(0);
             $('#xOffset2').val(0);
 
-						var trace1Name = graphs.data[0].name;
+	    var trace1Name = graphs.data[0].name;
             var trace2Name = graphs.data[1].name;
 
             // Reset plot to initial data
@@ -277,10 +278,96 @@
                 {x: initialX1, y: initialY1, mode: 'lines', name: trace1Name},
                 {x: initialX2, y: initialY2, mode: 'lines', name: trace2Name}
             ], graphs.layout);
+
+    	    document.querySelectorAll('input[type=range]').forEach(input => {
+    	        updateSliderValue(input.id, `${input.id}Value`);
+    	    });
         }
-        
+
+	
+	function generateValuesBetween(minValue, maxValue, numElements) {
+	    const step = (maxValue - minValue) / numElements;
+	    const valuesList = [];
+	    
+	    for (let i = 0; i < numElements; i++) {
+	        const value = minValue + step * i;
+	        valuesList.push(value);
+	    }
+	    
+	    return valuesList;
+	}
+
+	function findClosestTo1(valuesList) {
+	    let closestValue = valuesList[0];
+	    let minDiff = Math.abs(1 - closestValue);
+	    
+	    for (let i = 1; i < valuesList.length; i++) {
+	        const diff = Math.abs(1 - valuesList[i]);
+	        if (diff < minDiff) {
+	            closestValue = valuesList[i];
+	            minDiff = diff;
+	        }
+	    }
+	    
+	    return closestValue;
+	}
+
+	function findPower(value) {
+	    let power_out = 1;
+	    let value_tmp = value;
+
+	    while (value_tmp < 1) {
+		value_tmp *= 10;
+		power_out *= 10;
+		    console.log(power_out);
+	    }
+
+	    power_out /= 10;
+
+	    return power_out;
+	}
+
+	function updateSliderValue(sliderId, valueId) {
+            const slider = document.getElementById(sliderId);
+            const value = document.getElementById(valueId);
+	    let sliderValue = parseFloat(slider.value);
+	    var tp_list = {{ trans_params }};
+			console.log(tp_list);
+	    if (sliderId.includes('scale')) {
+	    	let scale_list = generateValuesBetween(tp_list[1], tp_list[0], 1000);
+	    	let var_tmp = findClosestTo1(scale_list);
+	    	if (Math.abs(var_tmp - sliderValue) < 0.00001) {
+            	    sliderValue = 1.0;
+    	    	}
+	    } else {
+		if (sliderId.includes('yOffset')) {
+	    	    let offset_list = generateValuesBetween(tp_list[3], tp_list[2], 1000);
+		    const modifiedList = offset_list.map(num => num + 1);
+		    let var_tmp = findClosestTo1(modifiedList);
+		    if (Math.abs(var_tmp - sliderValue - 1) < 0.00001) {
+			sliderValue = 0.0;
+		    }
+		}
+	    }
+	    const formattedValue = parseFloat(sliderValue).toFixed(5);
+            value.textContent = formattedValue;
+        }
+
+	document.addEventListener('DOMContentLoaded', () => {
+    	    document.querySelectorAll('input[type=range]').forEach(input => {
+    	        updateSliderValue(input.id, `${input.id}Value`);
+    	    });
+    	});
+
+        document.querySelectorAll('input[type=range]').forEach(input => {
+           input.addEventListener('input', () => {
+               updateSliderValue(input.id, `${input.id}Value`);
+           });
+        });
+
         $('input[type=range]').on('input', updatePlot);
-				$('#resetButton').on('click', resetSliders);
+	$('#resetButton').on('click', resetSliders);
+
     </script>
 
     <script defer src="https://umm.iris-home.net/script.js" data-website-id="e327d37b-ab6d-4807-a019-32d2be42c28e"></script>

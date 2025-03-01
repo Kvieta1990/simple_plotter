@@ -27,7 +27,7 @@ def index():
         # Handle File Upload
         single_mode = request.form.get('fileMode')
         if single_mode == "single":
-            file = request.files['datafile']
+            file = request.files['datafile1']
             num_header_lines = int(request.form.get('headerlines', 0))
             if file:
                 fn_save = str(uuid.uuid4()) + "." + file.filename.split(".")[1]
@@ -50,7 +50,11 @@ def index():
         else:
             num_header_lines = int(request.form.get('headerlines', 0))
             col_plot = int(request.form.get('colplot', 1))
-            files = request.files.getlist('datafile')
+            numLocs = int(request.form.get('numFiles'))
+            files = list()
+            for i in range(numLocs):
+                for f_tmp in request.files.getlist(f'datafile{i + 1}'):
+                    files.append(f_tmp)
             fn_save = str(uuid.uuid4())
             fns_init = list()
             for i, file in enumerate(files):
@@ -98,6 +102,9 @@ def plot(filename, filename_i):
 
     print("[Info]", session)
 
+    def is_monotonic(arr):
+        return np.all(np.diff(arr) >= 0) or np.all(np.diff(arr) <= 0)
+
     if 'visited_plot' in session:
         session.pop('visited_plot', None)
         session.modified = True
@@ -106,30 +113,50 @@ def plot(filename, filename_i):
     if smode == 1:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         try:
-            df = pd.read_csv(
-                filepath,
-                skiprows=header_lines,
-                header=None,
-                delimiter=r'\s*,\s*|\s+'
-            )
-            df.columns = [f'column-{i}' for i in range(len(df.columns))]
+            # df = pd.read_csv(
+            #     filepath,
+            #     skiprows=header_lines,
+            #     header=None,
+            #     delimiter=r'\s*,\s*|\s+'
+            # )
+            # df.columns = [f'column-{i}' for i in range(len(df.columns))]
+            # if df.isnull().values.any():
+            #     error_message = "File reading error. Please check the number of "
+            #     error_message += "header lines, input it correctly in the box."
+            #     flash(error_message, 'error')
+            #     return render_template('index.html', redirected=True)
+            with open(filepath, "r") as f:
+                data = np.loadtxt(
+                    (x.replace(',', ' ') for x in f),
+                    skiprows=header_lines
+                )
+            if not is_monotonic(data[:, 0]):
+                error_message = "File reading error. Please check the number of "
+                error_message += "header lines, input it correctly in the box."
+                flash(error_message, 'error')
+                return render_template('index.html', redirected=True)
         except:  # noqa
             error_message = "File reading error. Please check the number of "
             error_message += "header lines, input it correctly in the box."
             flash(error_message, 'error')
-            return redirect(url_for('index'))
+            return render_template('index.html', redirected=True)
 
         # Remove the uploaded data file after reading, to save space.
         os.remove(filepath)
 
-        df = df.apply(pd.to_numeric, errors='coerce')
-        df = df.dropna(axis=1, how='all')
+        # df = df.apply(pd.to_numeric, errors='coerce')
+        # df = df.dropna(axis=1, how='all')
+
+        df_dict = dict()
+        for i in range(len(data[0])):
+            df_dict[f"column-{i}"] = data[:, i]
+        df = pd.DataFrame(df_dict)
 
         fig = px.line(
             df,
             x=df.columns[0],
             y=df.columns[1:],
-            height=600
+            height=800
         )
         fig.update_layout(
             legend_title='Data',
@@ -157,6 +184,13 @@ def plot(filename, filename_i):
             flash(error_message, 'error')
             return redirect(url_for('index'))
 
+        try:
+            fn_if_only_one = lines[0]
+            fn_if_only_one += f" (column-{col_plot})"
+        except:  # noqa
+            error_message = "Error occurs, possible due to column specification."
+            flash(error_message, 'error')
+            return render_template('index.html', redirected=True)
 
         # After reading, remove the file to save space
         os.remove(fns_init_f)
@@ -172,20 +206,39 @@ def plot(filename, filename_i):
             )
 
             try:
-                df = pd.read_csv(
-                    filepath,
-                    skiprows=header_lines,
-                    header=None,
-                    delimiter=r'\s*,\s*|\s+'
-                )
+                # df = pd.read_csv(
+                #     filepath,
+                #     skiprows=header_lines,
+                #     header=None,
+                #     delimiter=r'\s*,\s*|\s+'
+                # )
+                # if df.isnull().values.any():
+                #     error_message = "File reading error. Please check the number of "
+                #     error_message += "header lines, input it correctly in the box."
+                #     flash(error_message, 'error')
+                #     return render_template('index.html', redirected=True)
+                with open(filepath, "r") as f:
+                    data = np.loadtxt(
+                        (x.replace(',', ' ') for x in f),
+                        skiprows=header_lines
+                    )
+                if not is_monotonic(data[:, 0]):
+                    error_message = "File reading error. Please check the number of "
+                    error_message += "header lines, input it correctly in the box."
+                    flash(error_message, 'error')
+                    return render_template('index.html', redirected=True)
             except:  #noqa
                 error_message = "File reading error. Please check the number of "
                 error_message += "header lines, input it correctly in the box."
                 flash(error_message, 'error')
                 return redirect(url_for('index'))
 
-            df = df.apply(pd.to_numeric, errors='coerce')
-            df = df.dropna(axis=1, how='all')
+            df_dict = dict()
+            for j in range(len(data[0])):
+                df_dict[f"column-{j}"] = data[:, j]
+            df = pd.DataFrame(df_dict)
+            # df = df.apply(pd.to_numeric, errors='coerce')
+            # df = df.dropna(axis=1, how='all')
 
             try:
                 trace = go.Scatter(
@@ -211,17 +264,23 @@ def plot(filename, filename_i):
 
         num_values = 10
         yminmin = np.inf
+        yminmin_o = np.inf
         ymaxmax = -np.inf
+        ymaxmax_o = -np.inf
         for yl in all_ys:
             ydiff = max(yl) - min(yl)
             if ydiff < yminmin:
                 yminmin = ydiff
             if ydiff > ymaxmax:
                 ymaxmax = ydiff
-        
+            if min(yl) < yminmin_o:
+                yminmin_o = min(yl)
+            if max(yl) > ymaxmax_o:
+                ymaxmax_o = max(yl)
+
         scale_u = ymaxmax / yminmin * 1.5
         scale_l = 1. / scale_u
-        offset_u = ymaxmax - yminmin
+        offset_u = ymaxmax_o - yminmin_o
         offset_l = -offset_u
 
         scale_arr = np.linspace(scale_l, scale_u, 20)
@@ -231,17 +290,17 @@ def plot(filename, filename_i):
         o_init_idx = np.abs(offset_arr).argmin()
         offset_arr[o_init_idx] = 0.
 
-        trans_params = [
-            scale_u, scale_l,
-            offset_u, offset_l,
-            all_xs[0][1] - all_xs[0][0],
-            all_xs[1][1] - all_xs[1][0]
-        ]
-
         if len(all_ys) == 2:
+            trans_params = [
+                scale_u, scale_l,
+                offset_u, offset_l,
+                all_xs[0][1] - all_xs[0][0],
+                all_xs[1][1] - all_xs[1][0]
+            ]
+
             fig.update_layout(
                 legend_title='Data',
-                height=900
+                height=800
             )
         else:
             fig.update_layout(
@@ -270,11 +329,18 @@ def plot(filename, filename_i):
                 trans_params=trans_params
             )
         else:
-            return render_template(
-                'plot.html',
-                plot_html=plot_html,
-                fn="Plot For Multiple Data Files"
-            )
+            if len(all_ys) == 1:
+                return render_template(
+                    'plot.html',
+                    plot_html=plot_html,
+                    fn=fn_if_only_one
+                )
+            else:
+                return render_template(
+                    'plot.html',
+                    plot_html=plot_html,
+                    fn="Plot For Multiple Data Files"
+                )
 
 
 if __name__ == '__main__':
