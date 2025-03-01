@@ -81,6 +81,10 @@
 	    width: 450px;
         }
 
+		input::placeholder {
+        color: grey; /* Set the placeholder text color to grey */
+				font-style: italic;
+    }
     </style>
 </head>
 <body>
@@ -142,13 +146,13 @@
             </div>
             <p>
                 <label for="headerlines" class="w3-text-black">Number of header lines:</label>
-                <input class="w3-input w3-border" type="number" id="headerlines" name="headerlines" value="0" min="0" step="1">
+                <input class="w3-input w3-border" type="number" id="headerlines" name="headerlines" min="0" step="1" placeholder="Optional. In case of data loading failure, input a value here.">
 		<span class="clickable-text" onclick="toggleVisibility('hiddenText')">Show/hide notes</span>
 		<span id="hiddenText" class="hidden"><br />Leaving the input as '0', we will try to figure out the number of header lines and skip them.<br />In case of failure in data loading, please specify the number of header lines explicitly.<br />Empty lines are better to be included while counting the number of header lines.</span>
             </p>
             <p>
                 <label for="headerlines" class="w3-text-black">Column to plot:</label>
-                <input class="w3-input w3-border" type="number" id="colplot" name="colplot" value="1" min="1" step="1">
+                <input class="w3-input w3-border" type="number" id="colplot" name="colplot" value="1" min="1" step="1" required>
 		<span class="clickable-text" onclick="toggleVisibility('hiddenText1')">Show/hide notes</span>
                 <span id="hiddenText1" class="hidden">(This option is for Multiple Files Mode only. DO NOT count the first column, as it will be used as X)</span>
             </p>

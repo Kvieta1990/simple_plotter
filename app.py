@@ -28,7 +28,10 @@ def index():
         single_mode = request.form.get('fileMode')
         if single_mode == "single":
             file = request.files['datafile1']
-            num_header_lines = int(request.form.get('headerlines', 0))
+            try:
+                num_header_lines = int(request.form.get('headerlines', 0))
+            except:  # noqa
+                num_header_lines = 0
             if file:
                 fn_save = str(uuid.uuid4()) + "." + file.filename.split(".")[1]
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], fn_save)
@@ -48,7 +51,10 @@ def index():
                     )
                 )
         else:
-            num_header_lines = int(request.form.get('headerlines', 0))
+            try:
+                num_header_lines = int(request.form.get('headerlines', 0))
+            except:  # noqa
+                num_header_lines = 0
             col_plot = int(request.form.get('colplot', 1))
             numLocs = int(request.form.get('numFiles'))
             files = list()
@@ -96,7 +102,11 @@ def plot(filename, filename_i):
             session.modified = True
             return redirect(url_for('index'))
 
-    header_lines = request.args.get('headerlines', default=0, type=int)
+    try:
+        header_lines = request.args.get('headerlines', default=0, type=int)
+    except:  # noqa
+        header_lines = 0
+    header_lines_i = header_lines
     col_plot = request.args.get('col_plot', default=1, type=int)
     smode = request.args.get('single_mode', default=1, type=int)
 
@@ -126,10 +136,29 @@ def plot(filename, filename_i):
             #     flash(error_message, 'error')
             #     return render_template('index.html', redirected=True)
             with open(filepath, "r") as f:
-                data = np.loadtxt(
-                    (x.replace(',', ' ') for x in f),
-                    skiprows=header_lines
-                )
+                if header_lines == 0:
+                    while True:
+                        try:
+                            data = np.loadtxt(
+                                (x.replace(',', ' ') for x in f),
+                                comments=[
+                                    "#", "!", ";", ":", "%", "*", "&", "$", "~", "'",
+                                    '"', "/", '\\'
+                                ],
+                                skiprows=header_lines
+                            )
+                            break
+                        except:  # noqa
+                            header_lines += 1
+                else:
+                    data = np.loadtxt(
+                        (x.replace(',', ' ') for x in f),
+                        comments=[
+                            "#", "!", ";", ":", "%", "*", "&", "$", "~", "'",
+                            '"', "/", '\\'
+                        ],
+                        skiprows=header_lines
+                    )
             if not is_monotonic(data[:, 0]):
                 error_message = "File reading error. Please check the number of "
                 error_message += "header lines, input it correctly in the box."
@@ -200,6 +229,7 @@ def plot(filename, filename_i):
 
         fig = go.Figure()
         for i in range(len(lines)):
+            header_lines = header_lines_i
             filepath = os.path.join(
                 app.config['UPLOAD_FOLDER'],
                 filename + f"_{i + 1}." + lines[i].strip().split(".")[1]
@@ -218,10 +248,29 @@ def plot(filename, filename_i):
                 #     flash(error_message, 'error')
                 #     return render_template('index.html', redirected=True)
                 with open(filepath, "r") as f:
-                    data = np.loadtxt(
-                        (x.replace(',', ' ') for x in f),
-                        skiprows=header_lines
-                    )
+                    if header_lines == 0:
+                        while True:
+                            try:
+                                data = np.loadtxt(
+                                    (x.replace(',', ' ') for x in f),
+                                    comments=[
+                                        "#", "!", ";", ":", "%", "*", "&", "$", "~", "'",
+                                        '"', "/", '\\'
+                                    ],
+                                    skiprows=header_lines
+                                )
+                                break
+                            except:  # noqa
+                                header_lines += 1
+                    else:
+                        data = np.loadtxt(
+                            (x.replace(',', ' ') for x in f),
+                            comments=[
+                                "#", "!", ";", ":", "%", "*", "&", "$", "~", "'",
+                                '"', "/", '\\'
+                            ],
+                            skiprows=header_lines
+                        )
                 if not is_monotonic(data[:, 0]):
                     error_message = "File reading error. Please check the number of "
                     error_message += "header lines, input it correctly in the box."
