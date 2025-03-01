@@ -5,24 +5,29 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-    .centered-content {
-        width: 60%;   /* Set the width of the content */
-        min-width: 800px; /* Optional: minimum width */
-        background-color: white; /* Solid background for the content area */
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        position: relative; /* Ensures it stays above the stars */
-        z-index: 2;
-    }
-    body {
-        background-color: black;
-        overflow: hidden;
-        margin: 0;
-        height: 100vh;
-        justify-content: center;
-        align-items: center;
-    }
+		        body {
+    display: flex;
+    flex-direction: column;
+    max-height:1250px;
+    margin: 0;
+    background-color: black;
+    justify-content: flex-start; /* Changed from center to flex-start */
+    overflow-x: auto;
+}
+.centered-content {
+    width: 50%;
+    min-width: 1700px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 80px auto; /* Centered horizontally and added top margin */
+    flex: 1; /* Ensure it grows to fill space */
+    overflow-y: auto;
+    position: relative;
+    z-index: 2;
+    max-height:1150px;
+}
 
     .star {
         position: absolute;
@@ -74,7 +79,7 @@
         <button onclick="toggleBackground()" class="w3-button w3-round">Dark/Light</button>
     </div>
 
-    <div class="centered-content w3-display-middle" style="width: 60%;">
+    <div class="centered-content" style="width: 60%;">
         <a href="/" class="w3-button" id="return_button" style="margin-left:17px;background:#7e98ec;color:white">Return</a>
         <div class="w3-card-4 w3-margin">
             <div class="w3-container w3-padding">
@@ -87,11 +92,6 @@
 						<br>
 						<a style="color: red"><b>N.B.</b> Refreshing current page will lead us back to the index page.</a>
 				</p>
-    </div>
-
-    <div class="footer-container">
-        <a id="copyright">Copyright &copy; 2025 Yuanpeng Zhang</a> <a id="sep1">|</a> <a class="color-link" href="https://www.ornl.gov/" target="_blank">ORNL</a> <a id="sep2">|</a> <a class="color-link" href="ht
-tps://github.com/Kvieta1990/simple_plotter" target="_blank">Project GitHub Repo</a> <a id="sep3">|</a> <a class="color-link" href="https://iris2020.net/contact" target="_blank">Contact Me</a>
     </div>
 
     <script>
