@@ -112,10 +112,6 @@
             const body = document.querySelector('body');
             const buttons = document.querySelectorAll('.w3-button');
             const stars = document.querySelectorAll('.star');
-            const copyright = document.getElementById('copyright');
-            const sep1 = document.getElementById('sep1');
-            const sep2 = document.getElementById('sep2');
-            const sep3 = document.getElementById('sep3');
 
             // Check current theme
             let currentTheme = localStorage.getItem('theme') || 'light'; // Default to 'light' if no theme is set
@@ -126,10 +122,6 @@
                 buttons.forEach(button => {
                     button.style.backgroundColor = 'white';
                     button.style.color = 'black';
-                    copyright.style.color = 'white';
-                    sep1.style.color = 'white';
-                    sep2.style.color = 'white';
-                    sep3.style.color = 'white';
                 });
 								document.getElementById('return_button').style.backgroundColor = '#7e98ec';
 								document.getElementById('return_button').style.color = 'white';
@@ -144,10 +136,6 @@
                 buttons.forEach(button => {
                     button.style.backgroundColor = '#7e98ec';
                     button.style.color = 'white';
-                    copyright.style.color = 'black';
-                    sep1.style.color = 'black';
-                    sep2.style.color = 'black';
-                    sep3.style.color = 'black';
                 });
                 stars.forEach(star => {
                     star.style.backgroundColor = 'white';
@@ -161,10 +149,6 @@
             const body = document.querySelector('body');
             const buttons = document.querySelectorAll('.w3-button');
             const stars = document.querySelectorAll('.star');
-            const copyright = document.getElementById('copyright');
-            const sep1 = document.getElementById('sep1');
-            const sep2 = document.getElementById('sep2');
-            const sep3 = document.getElementById('sep3');
 
             if (theme === 'dark') {
                 // Switch to dark theme
@@ -172,10 +156,6 @@
                 buttons.forEach(button => {
                     button.style.backgroundColor = 'white';
                     button.style.color = 'black';
-                    copyright.style.color = 'white';
-                    sep1.style.color = 'white';
-                    sep2.style.color = 'white';
-                    sep3.style.color = 'white';
                 });
 								document.getElementById('return_button').style.backgroundColor = '#7e98ec';
 								document.getElementById('return_button').style.color = 'white';
@@ -187,10 +167,6 @@
                 buttons.forEach(button => {
                     button.style.backgroundColor = '#7e98ec';
                     button.style.color = 'white';
-                    copyright.style.color = 'black';
-                    sep1.style.color = 'black';
-                    sep2.style.color = 'black';
-                    sep3.style.color = 'black';
                 });
                 stars.forEach(star => {
                     star.style.backgroundColor = 'white';
